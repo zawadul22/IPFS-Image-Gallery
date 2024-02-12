@@ -1,0 +1,9 @@
+.dropzone{
+    border: 1px dashed rgb(167, 167, 167);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    color: rgb(133, 133, 133);
+    cursor: pointer;
+}
