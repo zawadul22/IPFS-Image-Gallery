@@ -42,12 +42,10 @@ public class ImgServiceImpl implements ImgService{
             MerkleNode merkleNode =  ipfs.add(inputStreamWrapper).get(0);
             ApiFuture<DocumentSnapshot> future = firebaseConfig.db.collection("users").document(name).get();
             DocumentSnapshot document = future.get();
-
-            if(Objects.requireNonNull(document.getData()).containsValue(merkleNode.hash.toBase58())){
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("You have already uploaded this photo");
-            }
-
             if(docRef.get().get().exists()){
+                if(Objects.requireNonNull(document.getData()).containsValue(merkleNode.hash.toBase58())){
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("You have already uploaded this photo");
+                }
                 Map<String,String> update = new HashMap<>();
 //                ApiFuture<DocumentSnapshot> future = firebaseConfig.db.collection("users").document(name).get();
 //                DocumentSnapshot documentSnapshot = future.get();
@@ -61,7 +59,7 @@ public class ImgServiceImpl implements ImgService{
                 Map<String, String> docData = new HashMap<>();
                 docData.put("0", merkleNode.hash.toBase58());
                 ApiFuture<WriteResult> futureWrite = firebaseConfig.db.collection("users").document(name).set(docData);
-                return ResponseEntity.status(HttpStatus.OK).body("Uploaded Successfully ");
+                return ResponseEntity.status(HttpStatus.OK).body("uploaded successfully ");
             }
 
 
@@ -71,12 +69,16 @@ public class ImgServiceImpl implements ImgService{
     }
 
     @Override
-    public ResponseEntity<ArrayList<byte[]>> loadFile(String hash) {
+    public ResponseEntity<Object> loadFile(String name) {
         try {
             IPFS ipfs = ipfsConfig.ipfs;
-            ApiFuture<DocumentSnapshot> future = firebaseConfig.db.collection("users").document("eJs465YLEUexVmYZ1HOt53ukEBu1").get();
+            ApiFuture<DocumentSnapshot> future = firebaseConfig.db.collection("users").document(name).get();
             DocumentSnapshot document = future.get();
+            if(!document.exists()){
+                return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "No images found"));
+            }
             ArrayList<Object> cidList = new ArrayList<>(Objects.requireNonNull(document.getData()).values());
+
             ArrayList<byte[]> imageList = new ArrayList<>();
             ArrayList<Multihash> filePointerList = new ArrayList<>();
             for(int i=0; i<cidList.size(); i++){
@@ -87,40 +89,10 @@ public class ImgServiceImpl implements ImgService{
             return ResponseEntity.status(HttpStatus.OK).body(imageList);
 
         } catch (Exception e){
-            throw new RuntimeException("An error occurred ",e);
+            throw new RuntimeException("An error occurred ",e.getCause());
         }
     }
 
-    @Override
-    public boolean getDocument(String name) throws ExecutionException, InterruptedException {
-        DocumentReference docRef = firebaseConfig.db.collection("users").document(name);
-//        System.out.println("Doc ID "+docRef.toString());
-        return docRef.get().get().exists();
-    }
 
-    @Override
-    public ResponseEntity<Object> update(Updater updater) throws ExecutionException, InterruptedException {
-        Map<String,String> update = new HashMap<>();
-        update.put(updater.getSerial(), updater.getCid());
-        ApiFuture<WriteResult> writeResult = firebaseConfig.db.collection("users").document("user1").set(update, SetOptions.merge());
-        ApiFuture<DocumentSnapshot> future = firebaseConfig.db.collection("users").document("user1").get();
-        DocumentSnapshot document = future.get();
-//        Integer length = future.get().;
-        return ResponseEntity.status(HttpStatus.OK).body(Objects.requireNonNull(document.getData()).size());
-    }
 
-    @Override
-    public ResponseEntity<Object> checkCID(String cid) throws ExecutionException, InterruptedException {
-        ApiFuture<DocumentSnapshot> future = firebaseConfig.db.collection("users").document("eJs465YLEUexVmYZ1HOt53ukEBu1").get();
-        DocumentSnapshot document = future.get();
-        System.out.println(Objects.requireNonNull(document.getData()).containsValue(cid));
-//        System.out.println(document.contains(cid));
-        if(document.contains("0")){
-            return ResponseEntity.status(HttpStatus.OK).body(true);
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.OK).body(false);
-        }
-
-    }
 }

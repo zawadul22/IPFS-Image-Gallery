@@ -13,9 +13,7 @@ import java.util.concurrent.ExecutionException;
 public interface ImgService {
 
     ResponseEntity<Object> saveFile(MultipartFile file, String name);
-    ResponseEntity<ArrayList<byte[]>> loadFile(String hash);
-    boolean getDocument(String name) throws ExecutionException, InterruptedException;
-    ResponseEntity<Object> update(Updater updater) throws ExecutionException, InterruptedException;
-    ResponseEntity<Object> checkCID(String cid) throws ExecutionException, InterruptedException;
+    ResponseEntity<Object> loadFile(String name);
+
 
 }

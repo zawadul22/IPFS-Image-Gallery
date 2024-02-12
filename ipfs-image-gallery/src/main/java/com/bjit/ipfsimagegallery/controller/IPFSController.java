@@ -25,22 +25,8 @@ public class IPFSController {
     }
 
     @GetMapping(value = "get/{userId}")
-    public ResponseEntity<ArrayList<byte[]>> loadFile(@PathVariable("userId") String userId){
+    public ResponseEntity<Object> loadFile(@PathVariable("userId") String userId){
         return imgService.loadFile(userId);
     }
-
-    @GetMapping(value = "check/{name}")
-    public boolean checkDoc(@PathVariable("name") String name) throws ExecutionException, InterruptedException {
-        return imgService.getDocument(name);
-    }
-
-    @PutMapping(value = "/update")
-    public ResponseEntity<Object> update(@RequestBody Updater updater) throws ExecutionException, InterruptedException {
-        return imgService.update(updater);
-    }
-
-    @GetMapping(value = "/checkCid/{cid}")
-    public ResponseEntity<Object> checkService(@PathVariable("cid") String cid) throws ExecutionException, InterruptedException {
-        return imgService.checkCID(cid);
-    }
+    
 }

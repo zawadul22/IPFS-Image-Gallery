@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Login from './Components/Login'
 import './App.css'
@@ -11,14 +11,28 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
 
+  useEffect(() => {
+    if (sessionStorage.getItem("loggedIn") === 'true' && sessionStorage.getItem("userId") !== null) {
+      setIsLoggedIn(true);
+      setUsername(sessionStorage.getItem("userId"))
+    }
+    else if (sessionStorage.getItem("loggedIn") === 'false') {
+      setIsLoggedIn(false);
+      setUsername("");
+    }
+  }, [])
+
   const logout = () => {
     setIsLoggedIn(false);
     sessionStorage.setItem("loggedIn", false);
+    sessionStorage.removeItem("userId");
   }
 
-  const login = () =>{
+  const login = (e) => {
     setIsLoggedIn(true);
+    setUsername(e);
     sessionStorage.setItem("loggedIn", true);
+    sessionStorage.setItem("userId", e);
   }
   console.log(isLoggedIn);
   // console.log(username);
@@ -26,17 +40,17 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/gallery" element={<Gallery />} />
+        {/* <Route path="/gallery" element={<Gallery />} />
         <Route path="/" element={<Login setIsLoggedIn={setIsLoggedIn} setUsername={setUsername} />} />
-        <Route path="/register" element={<Register />} />
-        {/* {isLoggedIn ? (
-          <Route path="/" element={<Gallery isLoggedIn={isLoggedIn} logout={logout}/>} />
+        <Route path="/register" element={<Register />} /> */}
+        {isLoggedIn ? (
+          <Route path="/" element={<Gallery isLoggedIn={isLoggedIn} logout={logout} username={username} />} />
         ) : (
           <>
-            <Route path="/" element={<Login setIsLoggedIn={setIsLoggedIn} setUsername={setUsername} />} />
+            <Route path="/" element={<Login login={login} logout={logout} />} />
             <Route path="/register" element={<Register />} />
           </>
-        )} */}
+        )}
       </Routes>
     </>
 

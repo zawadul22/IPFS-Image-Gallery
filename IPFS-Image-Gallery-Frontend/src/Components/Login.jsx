@@ -26,8 +26,7 @@ const Login = (props) => {
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     const user = userCredential.user;
-                    props.setIsLoggedIn(true);
-                    props.setUsername(user.uid);
+                    props.login(user.uid);
                 })
                 .catch((e) => {
                     setError(true);
