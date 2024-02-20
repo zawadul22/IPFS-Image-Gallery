@@ -5,6 +5,7 @@ import './App.css'
 import Register from './Components/Register'
 import Gallery from './Components/Gallery'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import GalleryV2 from './Components/GalleryV2'
 
 function App() {
 
@@ -44,7 +45,8 @@ function App() {
         <Route path="/" element={<Login setIsLoggedIn={setIsLoggedIn} setUsername={setUsername} />} />
         <Route path="/register" element={<Register />} /> */}
         {isLoggedIn ? (
-          <Route path="/" element={<Gallery isLoggedIn={isLoggedIn} logout={logout} username={username} />} />
+          // <Route path="/" element={<Gallery isLoggedIn={isLoggedIn} logout={logout} username={username} />} />
+          <Route path="/" element={<GalleryV2 isLoggedIn={isLoggedIn} logout={logout} username={username} />} />
         ) : (
           <>
             <Route path="/" element={<Login login={login} logout={logout} />} />

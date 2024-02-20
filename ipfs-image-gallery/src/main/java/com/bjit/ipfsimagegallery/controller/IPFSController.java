@@ -28,5 +28,10 @@ public class IPFSController {
     public ResponseEntity<Object> loadFile(@PathVariable("userId") String userId){
         return imgService.loadFile(userId);
     }
-    
+
+    @GetMapping(value = "get/cid/{userId}")
+    public ResponseEntity<Object> loadFileV2(@PathVariable("userId") String userId){
+        return imgService.loadFileByCID(userId);
+    }
+
 }

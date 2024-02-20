@@ -78,7 +78,6 @@ public class ImgServiceImpl implements ImgService{
                 return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "No images found"));
             }
             ArrayList<Object> cidList = new ArrayList<>(Objects.requireNonNull(document.getData()).values());
-
             ArrayList<byte[]> imageList = new ArrayList<>();
             ArrayList<Multihash> filePointerList = new ArrayList<>();
             for(int i=0; i<cidList.size(); i++){
@@ -93,6 +92,29 @@ public class ImgServiceImpl implements ImgService{
         }
     }
 
+    @Override
+    public ResponseEntity<Object> loadFileByCID(String name) {
+        try {
+            IPFS ipfs = ipfsConfig.ipfs;
+            ApiFuture<DocumentSnapshot> future = firebaseConfig.db.collection("users").document(name).get();
+            DocumentSnapshot document = future.get();
+            if(!document.exists()){
+                return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "No images found"));
+            }
+            ArrayList<Object> cidList = new ArrayList<>(Objects.requireNonNull(document.getData()).values());
+//            ArrayList<byte[]> imageList = new ArrayList<>();
+//            ArrayList<Multihash> filePointerList = new ArrayList<>();
+//            for(int i=0; i<cidList.size(); i++){
+//                filePointerList.add(Multihash.fromBase58(cidList.get(i).toString()));
+//                imageList.add(ipfs.cat(filePointerList.get(i)));
+//            }
+//            Multihash filePointer = Multihash.fromBase58(hash);
+            return ResponseEntity.status(HttpStatus.OK).body(cidList);
+
+        } catch (Exception e){
+            throw new RuntimeException("An error occurred ",e.getCause());
+        }
+    }
 
 
 }

@@ -14,6 +14,6 @@ public interface ImgService {
 
     ResponseEntity<Object> saveFile(MultipartFile file, String name);
     ResponseEntity<Object> loadFile(String name);
-
+    ResponseEntity<Object> loadFileByCID(String name);
 
 }
