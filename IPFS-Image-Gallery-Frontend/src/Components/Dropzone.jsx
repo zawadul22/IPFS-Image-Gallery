@@ -10,14 +10,12 @@ const Dropzone = (props) => {
     const onDrop = useCallback(files => {
         setImage(files);
     })
-    const {
-        getRootProps,
-        getInputProps } = useDropzone({
-            onDrop,
-            accept: {
-                'image/*': ['.jpeg', '.png']
-            }
-        });
+    const { getRootProps, getInputProps } = useDropzone({
+        onDrop,
+        accept: {
+            'image/*': ['.jpeg', '.png']
+        }
+    });
 
     useEffect(() => {
         if (image.length === 0) {
